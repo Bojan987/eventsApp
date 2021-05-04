@@ -57,7 +57,7 @@ const BlockCard = ({ event }) => {
       <Hidden smDown>
         <Grid item sm={3}></Grid>
       </Hidden>
-      <Grid xs={12} md={6} item className={classes.gridItem}>
+      <Grid xs={11} md={6} item className={classes.gridItem}>
         <Card>
           <CardActionArea className={classes.gridBlock}>
             <CardMedia
@@ -68,7 +68,7 @@ const BlockCard = ({ event }) => {
               title={event.name}
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="h6">
+              <Typography gutterBottom  component="h6">
                 {event.name}
               </Typography>
 

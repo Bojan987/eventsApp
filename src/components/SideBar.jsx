@@ -7,6 +7,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
   },
   gridItem: {
-    margin: "0 17px",
+    margin: "0 10px",
     cursor: "pointer",
   },
 }));
@@ -129,6 +130,14 @@ const SideBar = () => {
             <MenuIcon fontSize="large" />
           </IconButton>
           <div className={classes.gridItems}>
+          {start>0&&<NavigateBeforeIcon
+              fontSize="large"
+              className={classes.gridItem}
+              onClick={() => {
+                setStart(start-20)
+                setRows(rows-20)
+              }}
+            />}
             <GridOnIcon
               fontSize="large"
               className={classes.gridItem}
