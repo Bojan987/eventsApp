@@ -27,7 +27,7 @@ const Cards = ({ events, isGrid }) => {
 
   return (
     <div className={classes.root}>
-      <Grid className={  classes.gridList+!isGrid&&classes.gridBlock} container spacing={10}>
+      <Grid className={  classes.gridList} container spacing={5}>
         {events.map((event) => 
           isGrid ?
             <GridCard event={event} key={event.id}/>

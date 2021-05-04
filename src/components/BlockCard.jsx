@@ -9,6 +9,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import Hidden from "@material-ui/core/Hidden";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,17 +20,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridBlock: {
-    display:'flex',
-    flexDirection:'row'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "start",
   },
 
-  cardItem: {
-    height: "100%",
-    width:'40%'
-  },
-  cardImg:{
-      width:'100px',
-      height:'100px'
+  cardImg: {
+    width: "100px",
+    height: "100px",
+    marginLeft: 10,
   },
   barSubtitle: {
     display: "flex",
@@ -45,52 +44,59 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginTop: "10px",
   },
+  gridItem: {
+    margin: "10px",
+  },
 }));
 
 const BlockCard = ({ event }) => {
   const classes = useStyles();
 
   return (
-    <Grid key={event.id} xs={12} item={true} >
-      <Card className={classes.cardItem}>
-        <CardActionArea className={classes.gridBlock}>
-          <CardMedia
-            className={classes.cardImg}
-            component="img"
-            alt={event.name}
-            
-            image={event.images ? event.images.large.url : ""}
-            title={event.name}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h6" component="h6">
-              {event.name}
-            </Typography>
+    <Grid container  key={event.id}>
+      <Hidden smDown>
+        <Grid item sm={3}></Grid>
+      </Hidden>
+      <Grid xs={12} md={6} item className={classes.gridItem}>
+        <Card>
+          <CardActionArea className={classes.gridBlock}>
+            <CardMedia
+              className={classes.cardImg}
+              component="img"
+              alt={event.name}
+              image={event.images ? event.images.large.url : ""}
+              title={event.name}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h6" component="h6">
+                {event.name}
+              </Typography>
 
-            {
-              <div className={classes.barSubtitle}>
-                <div className={classes.barSubtitleStyle}>
-                  <EventIcon className={classes.barSubtitleSpacing} />
+              {
+                <div className={classes.barSubtitle}>
+                  <div className={classes.barSubtitleStyle}>
+                    <EventIcon className={classes.barSubtitleSpacing} />
 
-                  <Typography variant="body2" component="p">
-                    {event.event_date
-                      ? moment(event.event_date.value).format("MMMM Do YYYY")
-                      : "TBD"}{" "}
-                  </Typography>
+                    <Typography variant="body2" component="p">
+                      {event.event_date
+                        ? moment(event.event_date.value).format("MMMM Do YYYY")
+                        : "TBD"}{" "}
+                    </Typography>
+                  </div>
+                  <div className={classes.barSubtitleStyle}>
+                    <LocationOnIcon className={classes.barSubtitleSpacing} />
+                    <Typography variant="body2" component="p">
+                      {event.venue.location.address.address
+                        ? event.venue.location.address.address
+                        : "In the Woods"}
+                    </Typography>
+                  </div>
                 </div>
-                <div className={classes.barSubtitleStyle}>
-                  <LocationOnIcon className={classes.barSubtitleSpacing} />
-                  <Typography variant="body2" component="p">
-                    {event.venue.location.address.address
-                      ? event.venue.location.address.address
-                      : "In the Woods"}
-                  </Typography>
-                </div>
-              </div>
-            }
-          </CardContent>
-        </CardActionArea>
-      </Card>
+              }
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Grid>
     </Grid>
   );
 };

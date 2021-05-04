@@ -23,9 +23,12 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     transform: "translateZ(0)",
   },
-
+  title:{
+    fontSize:15,
+    fontWeight:600
+  },
   cardItem: {
-    height: "300px",
+    height: "320px",
   },
   barSubtitle: {
     display: "flex",
@@ -58,7 +61,7 @@ const GridCard = ({ event }) => {
             title={event.name}
           />
           <CardContent>
-            <Typography gutterBottom variant="h6" component="h6">
+            <Typography gutterBottom variant="h6" component="h6" className={classes.title}>
               {event.name}
             </Typography>
 
@@ -66,24 +69,16 @@ const GridCard = ({ event }) => {
               <div className={classes.barSubtitle}>
                 <div className={classes.barSubtitleStyle}>
                   <EventIcon className={classes.barSubtitleSpacing} />
-                  
-                       <Typography
-                    variant="body2"
-                    
-                    component="p"
-                  >
+
+                  <Typography variant="body2" component="p">
                     {event.event_date
-                    ? moment(event.event_date.value).format("MMMM Do YYYY")
-                    : "TBD"}{" "}
+                      ? moment(event.event_date.value).format("MMMM Do YYYY")
+                      : "TBD"}{" "}
                   </Typography>
                 </div>
                 <div className={classes.barSubtitleStyle}>
                   <LocationOnIcon className={classes.barSubtitleSpacing} />
-                  <Typography
-                    variant="body2"
-                    
-                    component="p"
-                  >
+                  <Typography variant="body2" component="p">
                     {event.venue.location.address.address
                       ? event.venue.location.address.address
                       : "In the Woods"}
