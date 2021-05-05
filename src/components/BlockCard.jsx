@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
   },
   gridItem: {
-    margin: "10px",
+    margin: "15px",
+    
   },
 }));
 
@@ -53,11 +54,11 @@ const BlockCard = ({ event }) => {
   const classes = useStyles();
 
   return (
-    <Grid container  key={event.id}>
+    <Grid container  key={event.id} className={classes.gridItem}>
       <Hidden smDown>
         <Grid item sm={3}></Grid>
       </Hidden>
-      <Grid xs={11} md={6} item className={classes.gridItem}>
+      <Grid xs={12} md={6} item >
         <Card>
           <CardActionArea className={classes.gridBlock}>
             <CardMedia

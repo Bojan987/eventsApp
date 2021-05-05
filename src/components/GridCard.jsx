@@ -57,7 +57,7 @@ const GridCard = ({ event }) => {
             component="img"
             alt={event.name}
             height="140"
-            image={event.images ? event.images.large.url : ""}
+            image={event.images && event.images.large ? event.images.large.url : ""}
             title={event.name}
           />
           <CardContent>

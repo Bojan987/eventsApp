@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Checkboxes from "./Checkboxes";
 import RadioButtons from "./RadioButtons";
+import AutocompleteSelection from "./AutocompleteSelection";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,8 +25,9 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
 
   const [categories, setCategories] = useState(['']);
   const [selectedCategories,setSelectedCategories] = useState([])
-  const [checkBoxValues, setCheckBoxValues] = useState({domain:"germany",sortBy:'',categoryQueryString:''});
-  
+  const [checkBoxValues, setCheckBoxValues] = useState({domain:"germany",sortBy:'',categoryQueryString:'',cityQueryString:''});
+  const [cities,setCities] = useState([])
+  const [selectedCities,setSelectedCities] = useState([''])
   const checkBoxData = {domains:['germany','spain','poland'],sortBy:['eventname', 'popularity','eventdate']}
   
   
@@ -36,22 +38,30 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
       const {data} = await axios.get(
         `https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us`
       );
-    //   console.log(res.data)
+    
       setCategories(data.categories);
       
       const res = await  axios.get(`
-        https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&category_ids=${checkBoxValues.categoryQueryString}&sort_by=${checkBoxValues.sortBy}&start=${start}&rows=${rows}`
+        https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&category_ids=${checkBoxValues.categoryQueryString}&sort_by=${checkBoxValues.sortBy}&start=${start}&rows=${rows}&city_ids=${checkBoxValues.cityQueryString}`
       );
       console.log(res.data.events)
+      console.log(`
+      https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&category_ids=${checkBoxValues.categoryQueryString}&sort_by=${checkBoxValues.sortBy}&start=${start}&rows=${rows}&city_ids=${checkBoxValues.cityQueryString}`)
+      
       setEvents(res.data.events)
-      setLoading(false);
+      const domainId = domain ==='germany'? 276 : domain==='spain'?724:616
+      
+      const cityRes = await axios.get(`https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&country_id=${domainId}`)
+      setCities(cityRes.data.cities)
+      setLoading(false);  
     };
 
     fetchData(checkBoxValues.domain);
-  }, [checkBoxValues.domain,checkBoxValues.sortBy,checkBoxValues.categoryQueryString,setEvents,setLoading,start,rows]);
+  }, [checkBoxValues.domain,checkBoxValues.sortBy,checkBoxValues.categoryQueryString,setEvents,setLoading,start,rows,checkBoxValues.cityQueryString]);
 
   return (
     <div className={classes.root}>
+      <AutocompleteSelection cities={cities} setSelectedCities={setSelectedCities} selectedCities={selectedCities} setCheckBoxValues={setCheckBoxValues}/>
       <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -88,6 +98,7 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
             <RadioButtons data={checkBoxData.sortBy} setCheckBoxValues={setCheckBoxValues} radioFor='sortBy'/>
         </AccordionDetails>
       </Accordion>
+     
     </div>
   );
 };

@@ -28,11 +28,12 @@ const RadioButtons = ({ data, setCheckBoxValues, radioFor }) => {
         onChange={handleChange}
       >
         {data.map((el) => (
+          
           <FormControlLabel
             value={el}
             control={<Radio color="primary" />}
             label={el}
-            key={el}
+            key={ el}
             name={radioFor}
           />
         ))}

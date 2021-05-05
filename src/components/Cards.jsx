@@ -28,13 +28,13 @@ const Cards = ({ events, isGrid }) => {
   return (
     <div className={classes.root}>
       <Grid className={  classes.gridList} container spacing={5}>
-        {events.map((event) => 
+        {events.length > 0 ? events.map((event) => 
           isGrid ?
             <GridCard event={event} key={event.id}/>
             :
             <BlockCard event={event} key={event.id}/>
           
-      )}
+      ):<h1>Nothing Found</h1>}
       </Grid>
     </div>
   );
