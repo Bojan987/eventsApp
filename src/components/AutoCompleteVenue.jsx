@@ -15,23 +15,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setCheckBoxValues}) => {
+const AutoCompleteVenue = ({ setCheckBoxValues,venues}) => {
   const classes = useStyles();
 
   const handleSelect = (e, v) => {
     
-    const countryIds = v && v.map(el=>el.id)
-    countryIds && setSelectedCities(countryIds)
-  };
-  
-  useEffect(() => {
-    setCheckBoxValues((previous) => {
+    const venueIds = v && v.map(el=>el.id)
+    venueIds &&  setCheckBoxValues((previous) => {
       return {
         ...previous,
-        cityQueryString: selectedCities.join("%2C"),
+        venueQueryString: venueIds.join(","),
       };
     });
-  }, [selectedCities]);
+  };
+
+  const handleInput = (e)=>{
+    const {value,name} = e.target 
+    setCheckBoxValues(previous=>{ return {...previous,[name]:value}})
+  }
+  
+
 
 
   return (
@@ -41,21 +44,24 @@ const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setChec
         multiple
         autoSelect
         id="tags-standard"
-        options={cities}
+        options={venues}
         style={{ width: 200 }}
         renderInput={(params) => (
           <TextField
             {...params}
             label="Search Venue"
             variant="outlined"
-            onChange={handleSelect}
+            onChange={handleInput}
+            value={setCheckBoxValues.venueSearch}
+            name='venueSearch'
+
           />
         )}
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => `${option.name} ${option.id} `}
         onChange={handleSelect}
       />
     </>
   );
 };
 
-export default AutocompleteSelection;
+export default AutoCompleteVenue;

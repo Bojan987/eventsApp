@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Checkboxes from "./Checkboxes";
 import RadioButtons from "./RadioButtons";
 import AutocompleteSelection from "./AutocompleteSelection";
+import AutoCompleteVenue from "./AutoCompleteVenue";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,48 +21,96 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
-  const classes = useStyles(); 
+const SideBarAccordion = ({ setEvents, setLoading, start, rows }) => {
+  const classes = useStyles();
 
-  const [categories, setCategories] = useState(['']);
-  const [selectedCategories,setSelectedCategories] = useState([])
-  const [checkBoxValues, setCheckBoxValues] = useState({domain:"germany",sortBy:'',categoryQueryString:'',cityQueryString:''});
-  const [cities,setCities] = useState([])
-  const [selectedCities,setSelectedCities] = useState([''])
-  const checkBoxData = {domains:['germany','spain','poland'],sortBy:['eventname', 'popularity','eventdate']}
-  
-  
+  const [categories, setCategories] = useState([""]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [checkBoxValues, setCheckBoxValues] = useState({
+    domain: "germany",
+    sortBy: "",
+    categoryQueryString: "",
+    cityQueryString: "",
+    venueSearch: "",
+    venueQueryString: "",
+  });
+  const [cities, setCities] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([""]);
+  const [venues, setVenues] = useState([""]);
+  const checkBoxData = {
+    domains: ["germany", "spain", "poland"],
+    sortBy: ["eventname", "popularity", "eventdate"],
+  };
+
+  const url =
+    "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
 
   useEffect(() => {
     const fetchData = async (domain) => {
       setLoading(true);
-      const {data} = await axios.get(
+      const { data } = await axios.get(
         `https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us`
       );
-    
+
       setCategories(data.categories);
-      
-      const res = await  axios.get(`
-        https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&category_ids=${checkBoxValues.categoryQueryString}&sort_by=${checkBoxValues.sortBy}&start=${start}&rows=${rows}&city_ids=${checkBoxValues.cityQueryString}`
+
+      const res = await axios.get(url, {
+        params: {
+          domain: domain,
+          lang: "en-us",
+          category_ids: checkBoxValues.categoryQueryString,
+          sort_by: checkBoxValues.sortBy,
+          start: start,
+          rows: rows,
+          city_ids: checkBoxValues.cityQueryString,
+          venue_ids: checkBoxValues.venueQueryString,
+        },
+      });
+
+      setEvents(res.data.events);
+      const domainId =
+        domain === "germany" ? 276 : domain === "spain" ? 724 : 616;
+
+      const cityRes = await axios.get(
+        `https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&country_id=${domainId}`
       );
-      console.log(res.data.events)
-      console.log(`
-      https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&category_ids=${checkBoxValues.categoryQueryString}&sort_by=${checkBoxValues.sortBy}&start=${start}&rows=${rows}&city_ids=${checkBoxValues.cityQueryString}`)
-      
-      setEvents(res.data.events)
-      const domainId = domain ==='germany'? 276 : domain==='spain'?724:616
-      
-      const cityRes = await axios.get(`https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&country_id=${domainId}`)
-      setCities(cityRes.data.cities)
-      setLoading(false);  
+      setCities(cityRes.data.cities);
+
+      const venueRes = await axios.get(
+        `https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&venue_name=${checkBoxValues.venueSearch}`
+      );
+
+      setVenues(venueRes.data.venues);
+
+      setLoading(false);
     };
 
     fetchData(checkBoxValues.domain);
-  }, [checkBoxValues.domain,checkBoxValues.sortBy,checkBoxValues.categoryQueryString,setEvents,setLoading,start,rows,checkBoxValues.cityQueryString]);
+  }, [
+    checkBoxValues.domain,
+    checkBoxValues.sortBy,
+    checkBoxValues.categoryQueryString,
+    setEvents,
+    setLoading,
+    start,
+    rows,
+    checkBoxValues.cityQueryString,
+    checkBoxValues.venueSearch,
+    checkBoxValues.venueQueryString,
+  ]);
 
   return (
     <div className={classes.root}>
-      <AutocompleteSelection cities={cities} setSelectedCities={setSelectedCities} selectedCities={selectedCities} setCheckBoxValues={setCheckBoxValues}/>
+      <AutocompleteSelection
+        cities={cities}
+        setSelectedCities={setSelectedCities}
+        selectedCities={selectedCities}
+        setCheckBoxValues={setCheckBoxValues}
+      />
+      <AutoCompleteVenue
+        setCheckBoxValues={setCheckBoxValues}
+        venues={venues}
+      />
       <Accordion defaultExpanded={true}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -71,7 +120,11 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
           <Typography className={classes.heading}>Select Country</Typography>
         </AccordionSummary>
         <AccordionDetails>
-        <RadioButtons data={checkBoxData.domains} setCheckBoxValues={setCheckBoxValues}  radioFor='domain'/>
+          <RadioButtons
+            data={checkBoxData.domains}
+            setCheckBoxValues={setCheckBoxValues}
+            radioFor="domain"
+          />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded={true}>
@@ -83,7 +136,12 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
           <Typography className={classes.heading}>Choose a Category</Typography>
         </AccordionSummary>
         <AccordionDetails>
-        <Checkboxes data={categories} setCheckBoxValues={setCheckBoxValues} setSelectedCategories={setSelectedCategories} selectedCategories={selectedCategories}/>
+          <Checkboxes
+            data={categories}
+            setCheckBoxValues={setCheckBoxValues}
+            setSelectedCategories={setSelectedCategories}
+            selectedCategories={selectedCategories}
+          />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded={true}>
@@ -95,10 +153,13 @@ const SideBarAccordion = ({setEvents,setLoading,start,rows}) => {
           <Typography className={classes.heading}>Sort by:</Typography>
         </AccordionSummary>
         <AccordionDetails>
-            <RadioButtons data={checkBoxData.sortBy} setCheckBoxValues={setCheckBoxValues} radioFor='sortBy'/>
+          <RadioButtons
+            data={checkBoxData.sortBy}
+            setCheckBoxValues={setCheckBoxValues}
+            radioFor="sortBy"
+          />
         </AccordionDetails>
       </Accordion>
-     
     </div>
   );
 };

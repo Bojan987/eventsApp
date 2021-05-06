@@ -31,7 +31,7 @@ const Checkboxes = ({
     setCheckBoxValues((previous) => {
       return {
         ...previous,
-        categoryQueryString: selectedCategories.join("%2C"),
+        categoryQueryString: selectedCategories.join(","),
       };
     });
   }, [selectedCategories]);

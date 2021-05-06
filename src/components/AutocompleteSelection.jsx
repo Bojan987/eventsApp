@@ -28,7 +28,7 @@ const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setChec
     setCheckBoxValues((previous) => {
       return {
         ...previous,
-        cityQueryString: selectedCities.join("%2C"),
+        cityQueryString: selectedCities.join(","),
       };
     });
   }, [selectedCities]);
@@ -48,7 +48,7 @@ const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setChec
             {...params}
             label="Search City"
             variant="outlined"
-            onChange={handleSelect}
+            
           />
         )}
         getOptionLabel={(option) => option.name}
