@@ -1,22 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-}));
+
+
 
 const AutoCompleteVenue = ({ setCheckBoxValues,venues}) => {
-  const classes = useStyles();
+  
 
   const handleSelect = (e, v) => {
     
@@ -59,6 +50,7 @@ const AutoCompleteVenue = ({ setCheckBoxValues,venues}) => {
         )}
         getOptionLabel={(option) => `${option.name} ${option.id} `}
         onChange={handleSelect}
+        getOptionSelected={(option,value)=>(option.id===value.id)}
       />
     </>
   );

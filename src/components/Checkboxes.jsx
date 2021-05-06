@@ -16,7 +16,7 @@ const Checkboxes = ({
   // console.log(data.length)
 
   const handleClick = (index) => (e) => {
-    const { name, value, checked } = e.target;
+    const { value, checked } = e.target;
 
     setCheck(check.map((v, i) => (i === index ? !v : v)));
 
@@ -34,7 +34,7 @@ const Checkboxes = ({
         categoryQueryString: selectedCategories.join(","),
       };
     });
-  }, [selectedCategories]);
+  }, [selectedCategories,setCheckBoxValues]);
 
   return (
     <FormGroup>

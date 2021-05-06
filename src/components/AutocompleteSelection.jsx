@@ -1,22 +1,13 @@
 import React, { useEffect } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(0.5),
-    },
-  },
-}));
+
+
 
 const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setCheckBoxValues}) => {
-  const classes = useStyles();
+  
 
   const handleSelect = (e, v) => {
     
@@ -31,7 +22,7 @@ const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setChec
         cityQueryString: selectedCities.join(","),
       };
     });
-  }, [selectedCities]);
+  }, [selectedCities,setCheckBoxValues]);
 
 
   return (
@@ -53,6 +44,7 @@ const AutocompleteSelection = ({ cities,setSelectedCities,selectedCities,setChec
         )}
         getOptionLabel={(option) => option.name}
         onChange={handleSelect}
+        getOptionSelected={(option,value)=>(option.id===value.id)}
       />
     </>
   );

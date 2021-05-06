@@ -42,19 +42,30 @@ const SideBarAccordion = ({ setEvents, setLoading, start, rows }) => {
     sortBy: ["eventname", "popularity", "eventdate"],
   };
 
-  const url =
-    "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
+  const urlHandler = (url) => {
+    if (url === "events")
+      return "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
+    if (url === "domain")
+      return "https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
+    if (url === "cities")
+      return "https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
+    if (url === "venues")
+      return "https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88";
+  };
 
   useEffect(() => {
     const fetchData = async (domain) => {
       setLoading(true);
-      const { data } = await axios.get(
-        `https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us`
-      );
+      const { data } = await axios.get(urlHandler("domain"), {
+        params: {
+          domain: domain,
+          lang: "en-us",
+        },
+      });
 
       setCategories(data.categories);
 
-      const res = await axios.get(url, {
+      const res = await axios.get(urlHandler("events"), {
         params: {
           domain: domain,
           lang: "en-us",
@@ -68,18 +79,25 @@ const SideBarAccordion = ({ setEvents, setLoading, start, rows }) => {
       });
 
       setEvents(res.data.events);
-      const domainId =
-        domain === "germany" ? 276 : domain === "spain" ? 724 : 616;
 
-      const cityRes = await axios.get(
-        `https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&lang=en-us&country_id=${domainId}`
-      );
+      const domainId = { germany: 276, spain: 724, poland: 616 };
+
+      const cityRes = await axios.get(urlHandler("cities"), {
+        params: {
+          domain: domain,
+          lang: "en-us",
+          country_id: domainId[domain],
+        },
+      });
+
       setCities(cityRes.data.cities);
 
-      const venueRes = await axios.get(
-        `https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${domain}&venue_name=${checkBoxValues.venueSearch}`
-      );
-
+      const venueRes = await axios.get(urlHandler("venues"), {
+        params: {
+          domain: domain,
+          venue_name: checkBoxValues.venueSearch,
+        },
+      });
       setVenues(venueRes.data.venues);
 
       setLoading(false);
